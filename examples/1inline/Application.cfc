@@ -1,0 +1,2 @@
+component extends=ring.core {
+}
