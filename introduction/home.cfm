@@ -1,4 +1,3 @@
-<h1>Ring for CFML</h1>
 <h2>An Introduction</h2>
 <p>This example for Ring uses the <tt>Application.cfc</tt> at the root of the
   repository and the <tt>ring.util.response/uri_file()</tt> handler for displaying templates

@@ -110,7 +110,11 @@ component {
 
   // return a template based on the URI in the request
   function uri_file( req ) {
-    return file( req, ( len( req.uri ) ? req.uri : "/index" ) & ".cfm" );
+    // so that this can be used either in context as a method or
+    // out of context directly as a handler function:
+    var v = ( variables.keyExists( "file" ) && variables.keyExists( "uri_file" ) )
+      ? variables : new ring.util.response();
+    return v.file( req, ( len( req.uri ) ? req.uri : "/index" ) & ".cfm" );
   }
 
 }

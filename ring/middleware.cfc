@@ -142,7 +142,9 @@ component {
 
   // CFML-specific convenience for default middleware stacking
   function default_stack( handler ) {
-    return stack(
+    var v = ( variables.keyExists( "stack" ) && variables.keyExists( "default_stack" ) )
+      ? variables : new ring.middleware();
+    return v.stack(
       handler,
       [
         wrap_json_response,
