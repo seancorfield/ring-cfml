@@ -98,7 +98,7 @@ component {
   function wrap_cors( handler ) {
     return function( req ) {
       // TODO!
-      return req;
+      return handler( req );
     };
   }
 
@@ -111,9 +111,34 @@ component {
         var r = new ring.util.response();
         var stdout = createObject( "java", "java.lang.System" ).out;
         stdout.println( "\nException: #e.message#\nDetail: #e.detail#" );
-        return r.response( e.message ).status( 400 );
+        var resp = r.response( e.message );
+        return r.status( resp, 400 );
       }
     };
+  }
+
+  // CFML-specific convenience to make stacking middleware easier
+  function stack( handler, middleware ) {
+    for ( var m in middleware ) {
+      handler = m( handler );
+    }
+    return handler;
+  }
+
+  // CFML-specific convenience for default middleware stacking
+  function default_stack( handler ) {
+    return stack(
+      handler,
+      [
+        wrap_json_response,
+        wrap_json_params,
+        wrap_params,
+        wrap_session,
+        wrap_cookies,
+        wrap_cors,
+        wrap_exception
+      ]
+    );
   }
 
 }
