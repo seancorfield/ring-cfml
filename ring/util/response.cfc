@@ -108,4 +108,9 @@ component {
     return response( output );
   }
 
+  // return a template based on the URI in the request
+  function uri_file( req ) {
+    return file( req, ( len( req.uri ) ? req.uri : "/index" ) & ".cfm" );
+  }
+
 }
