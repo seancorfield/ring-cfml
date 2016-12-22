@@ -110,7 +110,7 @@ component {
       } catch ( any e ) {
         var r = new ring.util.response();
         var stdout = createObject( "java", "java.lang.System" ).out;
-        stdout.println( "\nException: #e.message#\nDetail: #e.detail#" );
+        stdout.println( "Exception: #e.message# : #e.detail# in #req.uri#" );
         var resp = r.response( e.message );
         return r.status( resp, 400 );
       }
