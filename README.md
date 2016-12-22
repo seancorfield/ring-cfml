@@ -1,6 +1,6 @@
 # Ring for CFML
 
-This is an early port of [Ring, the Clojure web application library)](https://github.com/ring-clojure/ring), to CFML.
+This is an early port of [Ring, the Clojure web application library](https://github.com/ring-clojure/ring), to CFML.
 
 Ring is based around the concepts of Handlers, Requests, Responses, and Middleware. It relies heavily on functional composition. You might want to read the [Ring Concepts](https://github.com/ring-clojure/ring/wiki/Concepts) wiki page for background at this point. Ring for CFML is intended to be "as close to Ring (for Clojure) as possible, but no closer" (to paraphrase Andrew Koenig, describing C++ in terms of C). This README outlines the CFML-specific differences, but you should otherwise assume that Ring for CFML behaves just like Ring for Clojure and should be programmed the same way.
 
@@ -16,7 +16,9 @@ The basic building block in Ring is a handler -- a function that accepts a reque
         };
     }
 
-This handler returns a simple HTML response with the given text. A more interesting handler would render a CFML template:
+This handler returns a simple HTML response with the given text. No `.cfm` page will be executed as part of any request since the handler produces a response.
+
+A more interesting handler would render a CFML template:
 
     // Application.cfc
     component extends=ring.core {
@@ -57,4 +59,37 @@ The `ring.util.response` namespace (component) provides convenience functions fo
 
 ## Middleware
 
-*CFML-Specific:* The `wrap_params` middleware adds the contents of the `URL` scope and `form` scope to the request, accessible jointly as `req.params`, with `form` scope taking precedence. The `URL` scope becomes `req.query_params`, if that wasn't already defined in the request. The `form` scope becomes `req.form_params`, if that wasn't already defined in the request.
+Each piece of middleware is a function that accepts a handler and returns a new handler. In general, that new handler will perform call the original handler, performing some work either before or after (or both). The general form of a middleware function is:
+
+    function middleware( handler ) {
+      return function( req ) {
+        var new_req = preprocess( req );
+        if ( proceed( new_req ) ) {
+          var resp = handler( new_req );
+          return postprocess( resp );
+        } else {
+          return some_response();
+        }
+      };
+    }
+
+The `ring.middleware` namespace (component) contains some common, basic middleware:
+
+* `wrap_cookies` - adds `req.cookies` as a structure containing all the cookies passed into a request; if `cookies` is added to a response, those cookies will be sent back to the client (along with the original cookies received); implemented on top of the `cookie` scope,
+* `wrap_cors` - adds CORS support to the request and response (not yet implemented),
+* `wrap_exception` - calls the supplied `handler` inside a `try` / `catch` and, if an exception occurs, logs it to the console and returns a 400 HTTP status with the exception message as the body; *CFML-Specific*,
+* `wrap_json_params` - adds `req.json_params` and expands `req.params` with the values obtained by decoding the HTTP request body (as JSON or form-urlencoded data),
+* `wrap_json_response` - if the response `body` is not a simple value, serializes it as JSON and sets the `Content-Type` of the response to `"application/json; charset=utf-8"`,
+* `wrap_params` - adds `req.query_params`, `req.form_params`, and expands `req.params` with the values from URL scope, form scope, and both scopes respectively,
+* `wrap_session` - adds `req.session` as a structure containing the contents of the session scope when a request starts; if `session` is added to a response, those session values will be added back to the session scope before the response is sent to the client.
+
+In addition, two convenience functions are providing for constructing stacks of middleware:
+
+* `default_stack` - wraps the supplied `handler` in a default set of middleware: JSON response & params, params, session, cookies, CORS, exception,
+* `stack` - wraps the supplied `handler` in the specified sequence of middleware, in order.
+
+# License & Copyright
+
+Copyright (c) 2016-2017 Sean Corfield.
+
+Distributed under the Apache Source License 2.0.
