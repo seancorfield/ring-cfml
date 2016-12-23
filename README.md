@@ -1,8 +1,25 @@
-# Ring for CFML
+# Ring for CFML [![Join the chat at https://gitter.im/seancorfield/ring-cfml](https://badges.gitter.im/seancorfield/ring-cfml.svg)](https://gitter.im/seancorfield/ring-cfml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This is an early port of [Ring, the Clojure web application library](https://github.com/ring-clojure/ring), to CFML.
 
 Ring is based around the concepts of Handlers, Requests, Responses, and Middleware. It relies heavily on functional composition. You might want to read the [Ring Concepts](https://github.com/ring-clojure/ring/wiki/Concepts) wiki page for background at this point. Ring for CFML is intended to be "as close to Ring (for Clojure) as possible, but no closer" (to paraphrase Andrew Koenig, describing C++ in terms of C). This README outlines the CFML-specific differences, but you should otherwise assume that Ring for CFML behaves just like Ring for Clojure and should be programmed the same way.
+
+## Running the Tutorial and Examples
+
+To explore the examples in this repository, I recommend using [CommandBox](https://www.ortussolutions.com/products/commandbox). That will allow you to just `git clone git@github.com:seancorfield/ring-cfml.git`, `cd ring-cfml`, and run `box start`.
+
+## Supported Platforms
+
+Ring for CFML has been tested on:
+
+* Adobe ColdFusion 11 and 2016 (it will not run on earlier versions due to reliance on built-in member functions).
+* Lucee 4.5, 5.0, and 5.1
+
+Jump into the [ring-cfml Gitter room](https://gitter.im/seancorfield/ring-cfml) for support or to ask questions!
+
+# Concepts
+
+The basic concepts of Handlers, Requests, Responses, and Middleware are covered below, with *CFML-Specific* differences highlighted.
 
 ## Handlers
 

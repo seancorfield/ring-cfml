@@ -1,4 +1,5 @@
 component extends=ring.core {
+  this.sessionmanagement = true;
 
   // (require '[ring.middleware :as mw])
   mw = new ring.middleware();

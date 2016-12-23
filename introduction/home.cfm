@@ -20,3 +20,8 @@
   }
   writeOutput( "</pre>" );
 </cfscript>
+<p>There are also a number of <a href="/examples">"toy" examples</a> that you can look
+  at to see different features in action. <em>[That link requires directory browsing enabled
+  on your web server -- which is the case if you're using
+  <a href="https://www.ortussolutions.com/products/commandbox">CommandBox</a>
+  to run these examples.]</em></p>
